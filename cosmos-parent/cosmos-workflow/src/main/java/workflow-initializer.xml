@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration  xmlns="http://rouies.com/workflow-initializer-config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://rouies.com/workflow-initializer-config workflow-initializer-config.xsd">
+	<factory-config>
+		<factory-item name="SEQUENCE_FACTORY" class="com.cosmos.workflow.runtime.factory.sequence.SequenceWorkflowFactory"/>
+		<factory-item name="STATE_FACTORY" class="com.cosmos.workflow.runtime.factory.state.StateWorkflowFactory"/>
+	</factory-config>
+</configuration>

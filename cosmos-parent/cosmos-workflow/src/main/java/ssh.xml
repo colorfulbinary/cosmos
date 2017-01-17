@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow id="sshtest" xmlns="http://rouies.com/workflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://rouies.com/workflow workflow.xsd">
+	<sequence id="sshsq">
+		<ssh-create-client is-reuse="true" port="22" out="client" account="zhangruyi" password="zhang.ruyi123" host="192.168.234.1"/>
+			<ssh-exec client="client" out="result" charset="GBK">
+				<![CDATA[osoperator user create-user 76533 ep90test 123456 ep90test]]>
+			</ssh-exec>
+			<echo in="{result}"></echo>
+		<ssh-close-client client="client"/>
+	</sequence>
+	<sequence id="redis-test">
+		<redis-create-new-client port="6379" password="rouies" out="client" host="127.0.0.1" index="0"/>
+		<!-- 
+		<redis-set-data client="client" key="USER:100" value="testValue" type="BINARY" nxxx="NONE"/>
+		<redis-get-data client="client" out="res" key="USER:100"/>
+		<echo in="{res}"/>
+		<redis-get-set-data client="client" out="res" key="USER:100" value="newValue"/>
+		<echo in="{res}"/>
+		<redis-get-data client="client" out="res" key="USER:100"/>
+		<echo in="{res}"/>
+		
+		 <redis-set-hash-data client="client" key="testhash" time="30000">
+		 	<field-info field-name="name" value="value1" type="BINARY"/>
+		 	<field-info field-name="age" value="value2"/>
+		 </redis-set-hash-data>
+		  <redis-set-hash-all-data client="client" key="info" value="value3" type="STRING"/>
+		   <redis-keys client="client" pattern="*" out="klist"/>
+		 <redis-get-values-by-keys client="client" out="res" keys="klist" type="HASH-STRING"/>
+		 <new-instance out="rshell" class="com.cosmos.workflow.test.RedisShellTest"/>
+		<redis-shell client="client" shell="rshell"></redis-shell>
+		<redis-change-db client="client" index="10"></redis-change-db>
+		<redis-list-push client="client" key="myList" value="value" />
+		  -->
+		
+		<redis-list-pop client="client" key="myList" out="res"></redis-list-pop>
+		<redis-close-client client="client"/>
+		<echo in="{res}"/>
+	</sequence>
+</workflow>

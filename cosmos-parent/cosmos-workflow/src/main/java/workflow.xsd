@@ -1,0 +1,1347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://rouies.com/workflow" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://rouies.com/workflow" elementFormDefault="qualified">
+	<xsd:annotation>
+		<xsd:documentation><![CDATA[
+			工作流根节点，表示一个流程集合，可以包含若干顺序流和一组状态流
+		]]></xsd:documentation>
+	</xsd:annotation>
+	<!-- ########################## 逻辑节点父类 ########################## -->
+	<xsd:complexType name="logic-base">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element ref="code" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="echo" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="external-method" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="static-method" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="sub-workflow" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="http-client" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="read-file" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="new-instance" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="db-query" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="db-update" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="db-close" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="db-commit" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="db-rollback" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="ognl-getter" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="string-format" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="type-convert" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="instream-to-string" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="string-to-instream" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="instream-to-jmap" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="instream-to-xml-document" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="read-xml-value" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="xml-elements" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="close-stream" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="sequence" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="choose" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="while" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="for-each" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="ssh-exec" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="ssh-shell" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="ssh-sftp" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="ssh-create-client" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="ssh-close-client" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-create-new-client" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-create-pool-client" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-close-client" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-get-data" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-set-data" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-get-set-data" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-set-hash-data" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-set-hash-all-data" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-keys" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-get-values-by-keys" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-shell" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-exists-key" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-change-db" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-list-pop" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="redis-list-push" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:choice>
+	</xsd:complexType>
+	<!-- ########################## 非空字符串类型 ########################## -->
+	<xsd:simpleType name="not-empty-string">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1" />
+			<xsd:whiteSpace value="collapse" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- ########################## 判断类型 ########################## -->
+	<xsd:simpleType name="judge">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="true" />
+			<xsd:enumeration value="false" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- ########################## 正整数 ##############################-->
+	<xsd:simpleType name="positive-number">
+		<xsd:restriction base="xsd:integer">
+			<xsd:minExclusive value="0"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- ########################## 0-正整数 ##############################-->
+	<xsd:simpleType name="positive-number-0">
+		<xsd:restriction base="xsd:integer">
+			<xsd:minInclusive value="0"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- ########################## workflow ########################## -->
+	<xsd:element name="workflow">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				该节点为根节点
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="sequence" minOccurs="1" />
+				<xsd:element ref="state" minOccurs="0" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ########################## state ########################## -->
+	<xsd:element name="state">
+		<xsd:complexType>
+			<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="initialize" minOccurs="0">
+					<xsd:complexType>
+						<xsd:attribute name="ref" type="not-empty-string" />
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="target" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType mixed="true">
+						<xsd:attribute name="id" type="not-empty-string"
+							use="required" />
+						<xsd:attribute name="to" type="not-empty-string"
+							use="required" />
+						<xsd:attribute name="ref" type="not-empty-string" />
+						<xsd:attribute name="import" type="not-empty-string" />
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="id" type="not-empty-string" use="required" />
+			<xsd:attribute name="type" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="begin" />
+						<xsd:enumeration value="normal" />
+						<xsd:enumeration value="end" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="sequence">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				表示一组执行序列的节点
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="logic-base">
+					<xsd:attribute name="id" type="not-empty-string" use="required" />
+					<xsd:attribute name="timeout" type="positive-number"/>
+					<xsd:attribute name="ex-on-continue" type="judge"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ########################## compensation补偿 ########################## -->
+	<xsd:element name="compensation" type="logic-base">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				表示补偿序列，该节点只有在执行节点有意义，逻辑节点无意义
+			]]></xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!-- ########################## finally终结 ########################## -->
+	<xsd:element name="finally" type="logic-base">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				表示结束后序列，该节点只有在执行节点有意义，逻辑节点无意义
+			]]></xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!-- ########################## code ########################## -->
+	<xsd:element name="code">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				表示执行一段Java代码
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType mixed="true">
+			<xsd:choice maxOccurs="2">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						表示一个唯一ID，由于关联动态编译的内容，该ID必须填写以提升性能
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="import" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						表示编辑代码中需要使用的包，要求全限定名，多个用逗号隔开，例如(java.lang.String,java.lang.Integer)
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ########################## echo ########################## -->
+	<xsd:element name="echo">
+		<xsd:complexType>
+			<xsd:choice maxOccurs="2">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" use="optional">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						标记该节点的ID
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="in" type="not-empty-string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						表示要打印的字符串，如果想打印payload里面的中西，则需要以{}包装key的值，例如{name}
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="target">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						表示要输出的位置,默认是console
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="console"/>
+						<xsd:enumeration value="file"/>
+						<xsd:enumeration value="all"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="file-out" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						当targe包含输出文件时,用来指明文件的位置（必须），否则将忽略此属性
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### external-method ########################## -->
+	<xsd:element name="external-method">
+		<xsd:complexType>
+			<xsd:choice minOccurs="1" maxOccurs="unbounded">
+				<xsd:element name="constructor" minOccurs="1" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation><![CDATA[
+							要执行动态方法的构造函数信息
+						]]></xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:attribute name="class" type="not-empty-string"
+							use="required">
+							<xsd:annotation>
+								<xsd:documentation><![CDATA[
+									要执行实例方法的类路径,例如:java.lang.String
+								]]></xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="types" type="not-empty-string">
+							<xsd:annotation>
+								<xsd:documentation><![CDATA[
+									要调用构造方法的参数类型列表，多个用逗号隔开，例如(java.lang.String,java.lang.Integer)
+								]]></xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="arguments" type="not-empty-string">
+							<xsd:annotation>
+								<xsd:documentation><![CDATA[
+									要调用构造方法的参数值对应在payload中的key值，多个用逗号隔开，例如(name,age)
+								]]></xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="method" minOccurs="1" maxOccurs="1">
+					<xsd:annotation>
+						<xsd:documentation><![CDATA[
+							要调用实例方法的信息
+						]]></xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:attribute name="name" type="not-empty-string"
+							use="required">
+							<xsd:annotation>
+								<xsd:documentation><![CDATA[
+									要调用的实例方法名称
+								]]></xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="types" type="not-empty-string">
+							<xsd:annotation>
+								<xsd:documentation><![CDATA[
+									要调用实例方法的参数类型列表，多个用逗号隔开，例如(java.lang.String,java.lang.Integer)
+								]]></xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="arguments" type="not-empty-string">
+							<xsd:annotation>
+								<xsd:documentation><![CDATA[
+									要调用实例方法的参数值对应在payload中的key值，多个用逗号隔开，例如(name,age)
+								]]></xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						标记节点使用的ID
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="out" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						表示执行结果将要输出payload中的key值，如果不填写，默认写入payload中的result中，通过getResule()方法获取
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### static-method ########################## -->
+	<xsd:element name="static-method">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				执行一个静态方法
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:choice maxOccurs="2">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						标识ID
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="out" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						表示执行结果将要输出payload中的key值，如果不填写，默认写入payload中的result中，通过getResule()方法获取
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="class" type="not-empty-string"
+				use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						要执行静态方法的类路径,例如java.lang.String
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="types" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						表示要执行方法的参数的类型列表,多个用逗号隔开，例如(java.lang.String,java.lang.Integer)
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="arguments" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						表示要执行方法所需参数对应在payload中的key值
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="name" type="not-empty-string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						要执行静态方法的方法名
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### sub-workflow ########################## -->
+	<xsd:element name="sub-workflow">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				调用一个子流程
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:choice maxOccurs="2">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						标识ID
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="ref" type="not-empty-string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						表示要执行的sequence节点的ID
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+
+	<!-- ######################### http-client ########################## -->
+	<xsd:element name="http-client">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				向指定地址发送一个HTTP请求
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+				<xsd:element name="request-properties" maxOccurs="2"
+					minOccurs="0">
+					<xsd:annotation>
+						<xsd:documentation><![CDATA[
+							表示request请求头中的内容
+						]]></xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="property" maxOccurs="unbounded"
+								minOccurs="1">
+								<xsd:complexType>
+									<xsd:sequence maxOccurs="0" minOccurs="0" />
+									<xsd:attribute name="key" type="not-empty-string"
+										use="required" />
+									<xsd:attribute name="value" type="not-empty-string"
+										use="required" />
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						标识ID
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="in" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						表示要发送的内容，类型跟client属性指向的值相关，如果指明client，默认是inputstream类型
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="out" type="not-empty-string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						表示执行结果将要输出payload中的key值
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="target" type="not-empty-string"
+				use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						要发送到的地址，如果要使用payload中的某一个变量，则使用{}包装key值，例如{address}
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="mehtod" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						http请求方法
+					]]></xsd:documentation>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="GET" />
+						<xsd:enumeration value="POST" />
+						<xsd:enumeration value="PUT" />
+						<xsd:enumeration value="DELETE" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="client" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						指定的http客户端对应的payload中的key值，必须是com.cosmos.utils.network.http.HttpClient的子类，默认是流传输
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="ssl" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						https请求使用的相关信息类对应在payload中的key值，必须是com.cosmos.utils.network.ssl.SSLConfiguration接口的实现类，不填写此项表示不适用https请求
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="progress" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						表示http请求报文传输的进度类对应在payload中的key值，必须是 com.cosmos.utils.io.StreamProcessor.Progress接口的实现类
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### read-file ########################## -->
+	<xsd:element name="read-file">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+				将一个物理文件转换为一个输入流,连带文件大小一起返回
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:choice maxOccurs="2">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						标记
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="size-out" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						文件大小对应的输出key
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="out" type="not-empty-string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						文件流对应的输出key
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="src" type="not-empty-string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+						文件路径，如果是绑定用{}
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### db-query ########################## -->
+	<xsd:element name="db-query">
+		<xsd:annotation>
+			<xsd:documentation>
+			<![CDATA[表示执行一条数据库查询语句,并返回一个]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType mixed="true">
+			<xsd:choice minOccurs="0" maxOccurs="3">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+				<xsd:element name="pager">
+					<xsd:complexType>
+						<xsd:attribute name="instance" type="not-empty-string" use="required"/>
+						<xsd:attribute name="page-number" type="not-empty-string" use="required"/>
+						<xsd:attribute name="page-size" type="not-empty-string" use="required"/>
+						<xsd:attribute name="count-out" type="not-empty-string" use="required"/>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="processor" type="not-empty-string" />
+			<xsd:attribute name="auto-transaction" type="judge"
+				default="false" />
+			<xsd:attribute name="arguments" type="not-empty-string" />
+			<xsd:attribute name="access" type="not-empty-string"
+				use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### db-update ########################## -->
+	<xsd:element name="db-update">
+		<xsd:complexType>
+			<xsd:choice minOccurs="1" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+				<xsd:element name="item" minOccurs="1" maxOccurs="unbounded">
+					<xsd:complexType mixed="true">
+						<xsd:attribute name="arguments" type="not-empty-string"
+							use="required" />
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="out" type="not-empty-string"/>
+			<xsd:attribute name="auto-transaction" type="judge"
+				default="false" />
+			<xsd:attribute name="access" type="not-empty-string"
+				use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### db-close ########################## -->
+	<xsd:element name="db-close">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="2">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="access" type="not-empty-string"
+				use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### db-commit ########################## -->
+	<xsd:element name="db-commit">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="2">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="access" type="not-empty-string"
+				use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### db-close ########################## -->
+	<xsd:element name="db-rollback">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="2">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="access" type="not-empty-string"
+				use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### ognl-getter ########################## -->
+	<xsd:element name="ognl-getter">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="2">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="out" type="not-empty-string" />
+			<xsd:attribute name="ognl" type="not-empty-string" use="required" />
+			<xsd:attribute name="arguments" type="not-empty-string" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### new-instance ########################## -->
+	<xsd:element name="new-instance">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="2">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="class" type="not-empty-string"
+				use="required" />
+			<xsd:attribute name="types" type="not-empty-string" />
+			<xsd:attribute name="arguments" type="not-empty-string" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### string-format ########################## -->
+	<xsd:element name="string-format">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="2">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="source" type="not-empty-string"
+				use="required" />
+			<xsd:attribute name="arguments" type="not-empty-string" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### type-convert ########################## -->
+	<xsd:element name="type-convert">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="in" type="not-empty-string" use="required" />
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="to" type="not-empty-string" use="required" />
+			<xsd:attribute name="init-value" type="not-empty-string" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### instream-to-string ########################## -->
+	<xsd:element name="instream-to-string">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="in" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="charset" type="not-empty-string"
+				default="UTF-8" />
+			<xsd:attribute name="length" default="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:integer">
+						<xsd:maxInclusive value="0" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### instream-to-string ########################## -->
+	<xsd:element name="string-to-instream">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="in" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="charset" type="not-empty-string"
+				default="UTF-8" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### instream-to-jmap ########################## -->
+	<xsd:element name="instream-to-jmap">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="in" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### instream-to-xml-document ########################## -->
+	<xsd:element name="instream-to-xml-document">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="in" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### read-xml-value ########################## -->
+	<xsd:element name="read-xml-value">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="in" type="not-empty-string" use="required" />
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="attribute-name" type="not-empty-string" use="optional" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### xml-elements ########################## -->
+	<xsd:element name="xml-elements">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="in" type="not-empty-string" use="required" />
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="xpath" type="not-empty-string"
+				use="required" />
+			<xsd:attribute name="count-out" type="not-empty-string" />
+			<xsd:attribute name="is-first" type="judge" default="false" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### close-stream ########################## -->
+	<xsd:element name="close-stream">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="in" type="not-empty-string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### ssh操作 ########################## -->
+	<xsd:element name="ssh-environment">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="property" minOccurs="1" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:attribute name="key" type="not-empty-string"
+							use="required" />
+						<xsd:attribute name="value" type="not-empty-string"
+							use="required" />
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:simpleType name="ssh-sftp-mode">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="OVERWRITE" />
+			<xsd:enumeration value="RESUME" />
+			<xsd:enumeration value="APPEND" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- ######################### ssh-exec ########################## -->
+	<xsd:element name="ssh-exec">
+		<xsd:complexType mixed="true">
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="ssh-environment" minOccurs="0"
+					maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="arguments" type="not-empty-string" />
+			<xsd:attribute name="timeout" type="xsd:integer" />
+			<xsd:attribute name="client" type="not-empty-string"
+				use="required" />
+			<xsd:attribute name="charset" type="not-empty-string"
+				use="required" />
+			<xsd:attribute name="out" type="not-empty-string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### ssh-shell ########################## -->
+	<xsd:element name="ssh-shell">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="ssh-command" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType mixed="true">
+						<xsd:attribute name="out" type="not-empty-string"
+							use="required" />
+						<xsd:attribute name="arguments" type="not-empty-string" />
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="ssh-environment" minOccurs="0"
+					maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="timeout" type="xsd:integer" />
+			<xsd:attribute name="client" type="not-empty-string"
+				use="required" />
+			<xsd:attribute name="charset" type="not-empty-string"
+				use="required" />
+			<xsd:attribute name="processor" type="not-empty-string" />
+			<xsd:attribute name="endChars" type="not-empty-string"
+				use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### ssh-sftp ########################## -->
+	<xsd:element name="ssh-sftp">
+		<xsd:complexType>
+			<xsd:choice minOccurs="1" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="ssh-environment" minOccurs="0" maxOccurs="1" />
+				<xsd:element name="ssh-sftp-make-dir">
+					<xsd:complexType>
+						<xsd:attribute name="path" type="not-empty-string" use="required"/>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="ssh-sftp-chown">
+					<xsd:complexType>
+						<xsd:attribute name="uid" type="not-empty-string" use="required"/>
+						<xsd:attribute name="path" type="not-empty-string" use="required"/>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="ssh-sftp-chgrp">
+					<xsd:complexType>
+						<xsd:attribute name="gid" type="not-empty-string" use="required"/>
+						<xsd:attribute name="path" type="not-empty-string" use="required"/>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="ssh-sftp-chmod">
+					<xsd:complexType>
+						<xsd:attribute name="permissions" type="not-empty-string" use="required"/>
+						<xsd:attribute name="path" type="not-empty-string" use="required"/>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="ssh-sftp-delete-dir">
+					<xsd:complexType>
+						<xsd:attribute name="path" type="not-empty-string" use="required"/>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="ssh-sftp-delete-file">
+					<xsd:complexType>
+						<xsd:attribute name="path" type="not-empty-string" use="required"/>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="ssh-sftp-upload">
+					<xsd:complexType>
+						<xsd:attribute name="in" type="not-empty-string"
+							use="required" />
+						<xsd:attribute name="target" type="not-empty-string"
+							use="required" />
+						<xsd:attribute name="progress" type="not-empty-string" />
+						<xsd:attribute name="mode" type="ssh-sftp-mode"
+							default="RESUME" />
+						<xsd:attribute name="offset" type="xsd:integer"
+							default="0" />
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="ssh-sftp-download">
+					<xsd:complexType>
+						<xsd:attribute name="in" type="not-empty-string" use="required" />
+						<xsd:attribute name="target" type="not-empty-string" use="required" />
+						<xsd:attribute name="progress" type="not-empty-string" />
+						<xsd:attribute name="mode" type="ssh-sftp-mode" default="RESUME"/>
+						<xsd:attribute name="skip" type="xsd:integer" default="0" />
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="timeout" type="xsd:integer" />
+			<xsd:attribute name="processor" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ssh-create-client">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+				<xsd:element name="ssh-configuration" minOccurs="0"
+					maxOccurs="1">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="property" minOccurs="1" maxOccurs="unbounded">
+								<xsd:complexType>
+									<xsd:attribute name="key" type="not-empty-string"
+										use="required" />
+									<xsd:attribute name="value" type="not-empty-string"
+										use="required" />
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="is-reuse" type="judge" use="required" />
+			<xsd:attribute name="host" type="not-empty-string" use="required" />
+			<xsd:attribute name="port" type="not-empty-string" use="required" />
+			<xsd:attribute name="account" type="not-empty-string"
+				use="required" />
+			<xsd:attribute name="password" type="not-empty-string"
+				use="required" />
+			<xsd:attribute name="userinfo" type="not-empty-string" />
+			<xsd:attribute name="timeout" type="xsd:integer" />
+			<xsd:attribute name="out" type="not-empty-string" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ssh-close-client">
+		<xsd:complexType>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string"
+				use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### choose ########################## -->
+	<xsd:element name="choose">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="when" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:complexContent>
+							<xsd:extension base="logic-base">
+								<xsd:choice>
+									<xsd:element name="express">
+										<xsd:complexType mixed="true">
+											<xsd:attribute name="import" type="not-empty-string" />
+										</xsd:complexType>
+									</xsd:element>
+								</xsd:choice>
+								<xsd:attribute name="id" type="not-empty-string"
+									use="required" />
+								<xsd:attribute name="ex-on-continue" type="judge"/>
+							</xsd:extension>
+						</xsd:complexContent>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="other" type="logic-base" minOccurs="0"
+					maxOccurs="1" />
+			</xsd:sequence>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="only" type="judge" default="true" />
+			<xsd:attribute name="ex-on-continue" type="judge"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### while ########################## -->
+	<xsd:element name="while">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="logic-base">
+					<xsd:choice>
+						<xsd:element name="express">
+							<xsd:complexType mixed="true">
+								<xsd:attribute name="import" type="not-empty-string" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:choice>
+					<xsd:attribute name="id" type="not-empty-string" use="required" />
+					<xsd:attribute name="ex-on-continue" type="judge"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### foreach ########################## -->
+	<xsd:element name="for-each">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="logic-base">
+					<xsd:attribute name="id" type="not-empty-string" />
+					<xsd:attribute name="in" type="not-empty-string" use="required" />
+					<xsd:attribute name="out" type="not-empty-string" use="required"/>
+					<xsd:attribute name="ex-on-continue" type="judge" use="optional"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- ######################### redis ########################## -->
+	<xsd:element name="redis-create-new-client">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="host" type="not-empty-string" use="required"/>
+			<xsd:attribute name="port" type="positive-number" use="required"/>
+			<xsd:attribute name="password" type="not-empty-string" use="required"/>
+			<xsd:attribute name="index" type="positive-number-0"/>
+			<xsd:attribute name="timeout" type="positive-number"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="redis-create-pool-client">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="pool-name" type="not-empty-string" use="required"/>
+			<xsd:attribute name="index" type="positive-number-0"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="redis-close-client">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="redis-shell">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+			<xsd:attribute name="shell" type="not-empty-string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
+	<xsd:element name="redis-set-data">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string"/>
+			<xsd:attribute name="key" type="not-empty-string" use="required"/>
+			<xsd:attribute name="value" type="not-empty-string" use="required"/>
+			<xsd:attribute name="nxxx" default="NONE">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="NX" />
+						<xsd:enumeration value="XX" />
+						<xsd:enumeration value="NONE" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="type">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="BINARY" />
+						<xsd:enumeration value="STRING" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="time" type="positive-number-0"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="redis-get-data">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string"/>
+			<xsd:attribute name="key" type="not-empty-string" use="required"/>
+			<xsd:attribute name="type">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="BINARY" />
+						<xsd:enumeration value="STRING" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="redis-get-set-data">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="type">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="BINARY" />
+						<xsd:enumeration value="STRING" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="key" type="not-empty-string" use="required"/>
+			<xsd:attribute name="value" type="not-empty-string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="redis-set-hash-data">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+				<xsd:element name="field-info" minOccurs="1" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:attribute name="field-name" type="not-empty-string" use="required"/>
+						<xsd:attribute name="value" type="not-empty-string"  use="required"/>
+						<xsd:attribute name="type" default="STRING">
+							<xsd:simpleType>
+								<xsd:restriction base="xsd:string">
+									<xsd:enumeration value="BINARY" />
+									<xsd:enumeration value="STRING" />
+								</xsd:restriction>
+							</xsd:simpleType>
+						</xsd:attribute>
+						<xsd:attribute name="nxxx" default="NONE">
+							<xsd:simpleType>
+								<xsd:restriction base="xsd:string">
+									<xsd:enumeration value="NX" />
+									<xsd:enumeration value="NONE" />
+								</xsd:restriction>
+							</xsd:simpleType>
+						</xsd:attribute>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string"/>
+			<xsd:attribute name="key" type="not-empty-string" use="required"/>
+			<xsd:attribute name="time" type="positive-number-0"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
+	<xsd:element name="redis-set-hash-all-data">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string"/>
+			<xsd:attribute name="key" type="not-empty-string" use="required"/>
+			<xsd:attribute name="value" type="not-empty-string" use="required"/>
+			<xsd:attribute name="time" type="positive-number-0"/>
+			<xsd:attribute name="type" default="STRING">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="BINARY" />
+						<xsd:enumeration value="STRING" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="redis-keys">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="pattern" type="not-empty-string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="redis-get-values-by-keys">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+			<xsd:attribute name="keys" type="not-empty-string" use="required"/>
+			<xsd:attribute name="type" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="BINARY" />
+						<xsd:enumeration value="STRING" />
+						<xsd:enumeration value="HASH-STRING" />
+						<xsd:enumeration value="HASH-BINARY" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="redis-change-db">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+			<xsd:attribute name="index" type="positive-number-0" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="redis-exists-key">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+			<xsd:attribute name="key" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="redis-list-push">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="out" type="not-empty-string" use="optional"/>
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+			<xsd:attribute name="key" type="not-empty-string" use="required"/>
+			<xsd:attribute name="value" type="not-empty-string" use="required"/>
+			<xsd:attribute name="direction">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="LEFT" />
+						<xsd:enumeration value="RIGHT" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="nx" default="NONE">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="NX" />
+						<xsd:enumeration value="NONE" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="type" default="STRING">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="BINARY" />
+						<xsd:enumeration value="STRING" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="redis-list-pop">
+		<xsd:complexType>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="compensation" minOccurs="0" maxOccurs="1" />
+				<xsd:element ref="finally" minOccurs="0" maxOccurs="1" />
+			</xsd:choice>
+			<xsd:attribute name="id" type="not-empty-string" />
+			<xsd:attribute name="client" type="not-empty-string" use="required"/>
+			<xsd:attribute name="key" type="not-empty-string" use="required"/>
+			<xsd:attribute name="out" type="not-empty-string" use="optional"/>
+			<xsd:attribute name="type" default="STRING">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="BINARY" />
+						<xsd:enumeration value="STRING" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="direction">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="LEFT" />
+						<xsd:enumeration value="RIGHT" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

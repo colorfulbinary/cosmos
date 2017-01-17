@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://rouies.com/workflow-activity-config" 
+	targetNamespace="http://rouies.com/workflow-activity-config" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	elementFormDefault="qualified">
+	<xsd:simpleType name="not-empty-string">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+			<xsd:whiteSpace value="collapse"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="configuration">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="activity" maxOccurs="unbounded">
+					<xsd:annotation>
+						<xsd:documentation><![CDATA[
+							表示的活动信息
+						]]></xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:attribute name="name" type="not-empty-string" use="required">
+							<xsd:annotation>
+								<xsd:documentation><![CDATA[
+									工作流活动在xml中所表示的标签名称
+								]]></xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="class" type="not-empty-string" use="required">
+							<xsd:annotation>
+								<xsd:documentation><![CDATA[
+									工作流活动对应的类路径
+								]]></xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+						<xsd:attribute name="initializer" type="not-empty-string">
+							<xsd:annotation>
+								<xsd:documentation><![CDATA[
+									互动信息的xml初始化器，必须是com.cosmos.workflow.runtime.xml。IXmlInitializer的实现类
+								]]></xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

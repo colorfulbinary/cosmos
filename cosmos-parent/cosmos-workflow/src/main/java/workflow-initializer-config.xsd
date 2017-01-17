@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://rouies.com/workflow-initializer-config" 
+	targetNamespace="http://rouies.com/workflow-initializer-config" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	elementFormDefault="qualified">
+	<xsd:simpleType name="not-empty-string">
+		<xsd:restriction base="xsd:string">
+			<xsd:minLength value="1"/>
+			<xsd:whiteSpace value="collapse"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="workflow_factory_type">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="SEQUENCE_FACTORY" />
+			<xsd:enumeration value="STATE_FACTORY" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:element name="configuration">
+		<xsd:complexType>
+			<xsd:choice minOccurs="1" maxOccurs="unbounded">
+				<xsd:element ref="factory-config"/>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="factory-config">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[工厂配置项]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence minOccurs="1" maxOccurs="unbounded">
+				<xsd:element name="factory-item">
+					<xsd:complexType>
+						<xsd:attribute name="name" type="workflow_factory_type" use="required"/>
+						<xsd:attribute name="class" type="not-empty-string" use="required"/>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow id="test_demo" xmlns="http://rouies.com/workflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://rouies.com/workflow workflow.xsd">
+	<state type="begin" id="C00000001">
+		<initialize ref="ST1"/>
+		<target to="C00000002" id="PD001" ref="ST2">
+			<![CDATA[payload.get("pd").equals("A")]]>
+		</target>
+		<target to="C00000003" id="PD002" ref="ST3">
+			<![CDATA[payload.get("pd").equals("B")]]>
+		</target>
+	</state>
+	
+	<state type="normal" id="C00000002">
+		<target to="C00000004" id="PD003" ref="ST4"/>
+	</state>
+	
+	<state type="normal" id="C00000003">
+		<target to="C00000004" id="PD004" ref="ST4"/>
+	</state>
+	
+	<state type="normal" id="C00000004">
+		<target to="C00000005" id="PD005" ref="ST5"/>
+	</state>
+	
+	<state type="end" id="C00000005">
+		<initialize ref="ST6"/>
+	</state>
+	
+	<sequence id="ST1">
+		<echo in="初始化状态1"></echo>
+	</sequence>
+	
+	<sequence id="ST2">
+		<echo in="走状态2"></echo>
+	</sequence>
+	
+	<sequence id="ST3" timeout="3000">
+		<echo in="走状态3"></echo>
+	</sequence>
+	
+	<sequence id="ST4" timeout="4000">
+		<echo in="走状态4"></echo>
+	</sequence>
+	
+	<sequence id="ST5" timeout="2000">
+		<echo in="走结束状态"></echo>
+	</sequence>
+	
+	<sequence id="ST6">
+		<echo in="结束"></echo>
+	</sequence>
+</workflow>

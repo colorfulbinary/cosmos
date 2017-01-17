@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow id="testwk" xmlns="http://rouies.com/workflow"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://rouies.com/workflow workflow.xsd">
+	
+	<sequence id="sequence1">
+		<echo in="success"></echo>
+		<!-- 
+		<ssh-create-client is-reuse="true" out="ssh-client" account="root" password="rouies" port="22" host="localhost1" timeout="1000">
+			<compensation>
+				<echo in="补偿"></echo>
+			</compensation>
+			<finally>
+				<echo in="最终"></echo>
+			</finally>
+		</ssh-create-client>
+		<ssh-exec client="ssh-client" out="result" charset="UTF-8">
+			<![CDATA[id]]>
+			<finally>
+				<ssh-close-client client="ssh-client"/>
+			</finally>
+		</ssh-exec>
+		<echo in="{result}"/>
+		 -->
+		<!-- 
+		<ssh-sftp client="ssh-client">
+			<ssh-sftp-chmod permissions="777" path="{path}"/>
+		</ssh-sftp>
+		<ssh-close-client client="ssh-client"/>
+		<echo in="success"></echo>
+		 -->
+		 <!-- 
+		<new-instance out="dba"   class="com.cosmos.workflow.test.OracleDBAccess"/>
+		<new-instance out="pager" class="com.cosmos.workflow.test.OracleDBPager"/>
+		<db-query access="dba" out="result" >
+		 	<pager instance="pager" page-size="{ps}" page-number="2" count-out="count"/>
+		 	<![CDATA[SELECT * FROM COSMOS_BUSINESS  ORDER BY BUSINESS_ID DESC]]>
+	    </db-query>
+	     <db-close access="dba"/>
+	   	 <echo in="{count}"/>
+		 <db-close access="dba"/>
+		 <for-each in="result" out="item">
+		 	<for-each in="item" out="record">
+		 		<code id="201313123123" import="java.util.Map.Entry"><![CDATA[
+		 			Entry item = (Entry)payload.get("record");
+		 			System.out.println(item.getKey() + ":" + item.getValue());
+		 		]]></code>
+		 	</for-each>
+		 </for-each>
+		-->
+		<!-- 
+		<new-instance out="list" class="java.util.ArrayList" types="" arguments=""/>
+		<code id="123" import="java.util.ArrayList">
+			<![CDATA[
+				ArrayList a = payload.getValue("list",ArrayList.class);
+				a.add("111");
+				a.add("222");
+				System.out.println("流程开始");
+				payload.put("list",a);
+			]]>
+		</code>
+		<for-each in="list" out="item">
+			<code id="678">
+				<![CDATA[
+					int index = payload.getIndex();
+					Object res = payload.get("item");
+					System.out.println(index);
+					System.out.println(res);
+				]]>
+			</code>
+		</for-each>
+		 -->
+		<!-- 
+		<external-method out="result">
+			<constructor class="com.cosmos.workflow.runtime.test.SSHClient" types="java.lang.String" arguments="address"/>
+			<method name="send" types="java.lang.String" arguments="cmd"/>
+		</external-method>
+		 -->
+		 <!--
+		 <while id="w1">
+			<express><![CDATA[((Integer)payload.get("count")) <= 10]]></express>
+			<code >
+				<![CDATA[
+					int count = (Integer)payload.get("count");
+					payload.put("count",count+1);
+					System.out.println(count);
+				]]>
+			</code>
+			<static-method class="java.lang.System" name="currentTimeMillis" out="resval">
+				<compensation>
+					<code id="777">
+						<![CDATA[
+							System.out.println("补偿");
+						]]>
+					</code>
+				</compensation>
+			</static-method>
+			<code id="444">
+				<![CDATA[
+					System.out.println(payload.get("resval"));
+				]]>
+			</code>
+		</while>
+		  -->
+		<!-- 
+		<type-convert in="age" out="test" to="java.lang.Integer"/>
+		<static-method class="java.lang.System" name="currentTimeMillis" out="resval">
+			<compensation>
+				<code id="777">
+					<![CDATA[
+						System.out.println("补偿");
+					]]>
+				</code>
+			</compensation>
+		</static-method>
+		 -->
+		 <!-- 
+		<ognl-getter out="abc" ognl="#test1->@append(java.lang.String)" args="ap"/>
+		<ognl-getter out="abc" ognl="#test1->@insert(int,java.lang.String)" args="index,ap"/>
+		
+		<http-client out="result" target="{address}" method="GET"/>
+		<instream-to-string charset="gbk" in="result" out="result"/>
+		<code id="456">
+			<![CDATA[
+				Object age = payload.get("result");
+				System.out.println(age);
+				/*payload.put("resval",payload.get("resval").toString());
+				payload.put("index",0);*/
+			]]>
+		</code>
+		 -->
+		<!--
+		<external-method id="121231" out="resultString">
+			<constructor class="java.lang.StringBuilder" types="java.lang.String" arguments="resval"/>
+			<method name="insert" types="int,java.lang.String" arguments="index,name"/>
+		</external-method>
+		<code id="000">
+			<![CDATA[
+				Object result = payload.get("resultString");
+				System.out.println(result);
+			]]>
+		</code>
+		-->
+	</sequence>
+</workflow>

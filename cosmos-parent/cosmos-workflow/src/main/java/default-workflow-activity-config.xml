@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration  xmlns="http://rouies.com/workflow-activity-config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://rouies.com/workflow-activity-config workflow-activity-config.xsd">
+	<!-- 状态活动 -->
+	<activity name="state" class="com.cosmos.workflow.activities.state.StateActivity"  initializer="com.cosmos.workflow.runtime.xml.initializer.StateActivityInitializer"/>
+	<!-- 逻辑活动 -->
+	<activity name="choose" class="com.cosmos.workflow.activities.sequence.logic.ChooseActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.ChooseActivityInitializer"/>
+	<activity name="when" class="com.cosmos.workflow.activities.sequence.logic.WhenActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.WhenActivityInitializer"/>
+	<activity name="other" class="com.cosmos.workflow.activities.sequence.logic.WhenActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.WhenActivityInitializer"/>
+	<activity name="while" class="com.cosmos.workflow.activities.sequence.logic.WhileActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.WhileActivityInitializer"/>
+	<activity name="sequence" class="com.cosmos.workflow.activities.sequence.logic.SequenceActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.SequenceActivityInitializer"/>
+	<activity name="for-each" class="com.cosmos.workflow.activities.sequence.logic.ForeachActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.ForeachActivityInitializer"/>
+	<!-- 执行活动 -->
+	<activity name="code" class="com.cosmos.workflow.activities.sequence.action.call.CodeActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.CodeActivityInitializer"/>
+	<activity name="external-method" class="com.cosmos.workflow.activities.sequence.action.call.ExternalCallActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.ExternalCallActivityInitializer"/>
+	<activity name="static-method" class="com.cosmos.workflow.activities.sequence.action.call.StaticCallActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.StaticCallActivityInitializer"/>
+	<activity name="sub-workflow" class="com.cosmos.workflow.activities.sequence.action.call.SubWorkflowActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.SubWorkflowInitializer"/>
+	<activity name="http-client" class="com.cosmos.workflow.activities.sequence.action.network.http.HttpRequestActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.HttpRequectActivityInitializer"/>
+	<activity name="read-file" class="com.cosmos.workflow.activities.sequence.action.io.ReadFileActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.ReadFileActivityInitializer"/>
+	<activity name="db-query" class="com.cosmos.workflow.activities.sequence.action.db.DBQueryExecutorActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.DBQueryExecutorActivityInitializer"/>
+	<activity name="db-update" class="com.cosmos.workflow.activities.sequence.action.db.DBUpdateExecutorActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.DBUpdateExecutorActivityInitializer"/>
+	<activity name="db-close" class="com.cosmos.workflow.activities.sequence.action.db.DBCloseConnectionActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.DBCloseConnectionActivityInitializer"/>
+	<activity name="db-commit" class="com.cosmos.workflow.activities.sequence.action.db.DBCommitTransactionActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.DBCommitTransactionActivityInitializer"/>
+	<activity name="db-rollback" class="com.cosmos.workflow.activities.sequence.action.db.DBRollbackTransactionActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.DBRollbackTransactionActivityInitializer"/>
+	<activity name="ognl-getter" class="com.cosmos.workflow.activities.sequence.action.call.OgnlGetterActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.OgnlGetterActivityInitializer"/>
+	<activity name="new-instance" class="com.cosmos.workflow.activities.sequence.action.call.CreateObjectActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.CreateObjectActivityInitializer"/>
+	<activity name="echo" class="com.cosmos.workflow.activities.sequence.action.call.EchoActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.EchoActivityInitializer"/>
+	<activity name="string-format" class="com.cosmos.workflow.activities.sequence.action.call.StringFormatActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.StringFormatActivityInitializer"/>
+	<activity name="close-stream" class="com.cosmos.workflow.activities.sequence.action.io.CloseStreamActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.CloseStreamActivityInitializer"/>
+	<activity name="ssh-create-client" class="com.cosmos.workflow.activities.sequence.action.network.ssh.SSHClientActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.SSHClientActivityInitializer"/>
+	<activity name="ssh-close-client" class="com.cosmos.workflow.activities.sequence.action.network.ssh.SSHCloseActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.SSHCloseActivityInitializer"/>
+	<activity name="ssh-exec" class="com.cosmos.workflow.activities.sequence.action.network.ssh.SSHExecActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.SSHExecActivityInitializer"/>
+	<activity name="ssh-shell" class="com.cosmos.workflow.activities.sequence.action.network.ssh.SSHShellActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.SSHShellActivityInitializer"/>
+	<activity name="ssh-sftp" class="com.cosmos.workflow.activities.sequence.action.network.ssh.SSHSFtpActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.SSHSFtpActivityInitializer"/>
+	<!-- 转换活动 -->
+	<activity name="type-convert" class="com.cosmos.workflow.activities.sequence.action.convertor.TypeConvertActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.TypeConvertActivityInitializer"/>
+	<activity name="instream-to-string" class="com.cosmos.workflow.activities.sequence.action.convertor.InputStreamToStringActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.InputStreamToStringActivityInitializer"/>
+	<activity name="string-to-instream" class="com.cosmos.workflow.activities.sequence.action.convertor.StringToInputStreamActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.StringToInputStreamActivityInitializer"/>
+	<activity name="instream-to-jmap" class="com.cosmos.workflow.activities.sequence.action.convertor.InputStreamToJsonMapActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.InputStreamToJsonMapActivityInitializer"/>
+	<!-- xml -->
+	<activity name="instream-to-xml-document" class="com.cosmos.workflow.activities.sequence.action.xml.InputStreamToDocumentActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.InputStreamToDocumentActivityInitializer"/>
+	<activity name="read-xml-value" class="com.cosmos.workflow.activities.sequence.action.xml.ReadXmlAttributeValueActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.ReadXmlAttributeValueActivityInitializer"/>
+	<activity name="xml-elements" class="com.cosmos.workflow.activities.sequence.action.xml.GetElementByXPathActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.GetElementByXPathActivityInitializer"/>
+	<!-- redis -->
+	<activity name="redis-create-new-client" class="com.cosmos.workflow.activities.sequence.action.redis.RedisClientActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisClientActivityInitializer"/>
+	<activity name="redis-create-pool-client" class="com.cosmos.workflow.activities.sequence.action.redis.RedisPoolClientActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisPoolClientActivityInitializer"/>
+	<activity name="redis-close-client" class="com.cosmos.workflow.activities.sequence.action.redis.RedisCloseActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisCloseActivityInitializer"/>
+	<activity name="redis-exists-key" class="com.cosmos.workflow.activities.sequence.action.redis.RedisExistsActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisExistsActivityInitializer"/>
+	<activity name="redis-change-db" class="com.cosmos.workflow.activities.sequence.action.redis.RedisChangeDBActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisChangeDBActivityInitializer"/>
+	<activity name="redis-get-data" class="com.cosmos.workflow.activities.sequence.action.redis.RedisGetDataActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisGetDataActivityInitializer"/>
+	<activity name="redis-set-data" class="com.cosmos.workflow.activities.sequence.action.redis.RedisSetDataActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisSetDataActivityInitializer"/>
+	<activity name="redis-get-set-data" class="com.cosmos.workflow.activities.sequence.action.redis.RedisGetSetDataActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisGetSetDataActivityInitializer"/>
+	<activity name="redis-set-hash-data" class="com.cosmos.workflow.activities.sequence.action.redis.RedisSetHashDataActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisSetHashDataActivityInitializer"/>
+	<activity name="redis-set-hash-all-data" class="com.cosmos.workflow.activities.sequence.action.redis.RedisSetHashAllDataActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisSetHashAllDataActivityInitializer"/>
+	<activity name="redis-keys" class="com.cosmos.workflow.activities.sequence.action.redis.RedisKeysActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisKeysActivityInitializer"/>
+	<activity name="redis-get-values-by-keys" class="com.cosmos.workflow.activities.sequence.action.redis.RedisGetValuesByKeysActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisGetValuesByKeysActivityInitializer"/>
+	<activity name="redis-shell" class="com.cosmos.workflow.activities.sequence.action.redis.RedisShellActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisShellActivityInitializer"/>
+	<activity name="redis-list-push" class="com.cosmos.workflow.activities.sequence.action.redis.RedisListPushActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisListPushActivityInitializer"/>
+	<activity name="redis-list-pop" class="com.cosmos.workflow.activities.sequence.action.redis.RedisListPopActivity" initializer="com.cosmos.workflow.runtime.xml.initializer.RedisListPopActivityInitializer"/>
+</configuration>
